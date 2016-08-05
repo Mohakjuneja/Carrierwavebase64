@@ -1,28 +1,21 @@
-== README
+REQUEST TYPE: POST
+localhost:3000/contents
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# The request JSON contains 3 attributes - title, description and an array of assets_attributes containing all the base64 encoded images in the format - data:image/jpeg;base64,base64 encoded image
 
-Things you may want to cover:
+REQUEST JSON:
 
-* Ruby version
+{
+	"content": {
+		"title": "LIGO experiment",
+		"description": "Gravitational Waves",
+		"assets_attributes": [{
+			"asset": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTUK/9sAQwACAQEBAQECAQEBAgICAgIEAwICAgIFBAQDBAYFBgYGBQYGBgcJCAYHCQcGBggLCAkKCgoKCgYICwwLCgwJCgoK/9sAQwECAgICAgIFAwMFCgcGBwoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoK/8AAEQgC7gPoAwEiAAIRAQM......
+			},
+			{ "asset": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTUK/9sAQwACAQEBAQECAQEBAgICAgIEAwICAgIFBAQDBAYFBgYGBQYGBgcJCAYHCQcGBggLCAkKCgoKCgYICwwLCgwJCgoK/9sAQwECAgICAgIFAwMFCgcGBwoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoK/8AAEQgC7gPoAwEiAAIRAQM......
+			}
+			]
+		}
+}
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+The file will be uploaded to your file system in the public/uploads folder of the rails application.

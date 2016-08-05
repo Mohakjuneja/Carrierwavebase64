@@ -1,14 +1,23 @@
 # encoding: utf-8
+require 'carrierwave/processing/mime_types'
 
-class AvatarUploader < CarrierWave::Uploader::Base
+class Uploader < CarrierWave::Uploader::Base
 
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
-  # include CarrierWave::MiniMagick
+  include CarrierWave::MimeTypes
+  process :set_content_type
 
-  # Choose what kind of storage to use for this uploader:
-  # storage :file
-  storage :fog
+  include CarrierWave::MiniMagick
+
+  # offloading storage/processing to a background task  
+  include ::CarrierWave::Backgrounder::Delay
+
+  # storage :fog
+  storage :file  
+  # storage Rails.env == "production" ? :fog : :file
+
+  def cache_dir
+    "#{Rails.root}/tmp/cache/#{model.id}"
+  end
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -24,6 +33,11 @@ class AvatarUploader < CarrierWave::Uploader::Base
   #   "/images/fallback/" + [version_name, "default.png"].compact.join('_')
   # end
 
+  # def default_url
+  #   "/assets/images/shared/missing_image.png"
+  # end
+
+  
   # Process files as they are uploaded:
   # process :scale => [200, 300]
   #
@@ -36,16 +50,18 @@ class AvatarUploader < CarrierWave::Uploader::Base
   #   process :resize_to_fit => [50, 50]
   # end
 
-  # Add a white list of extensions which are allowed to be uploaded.
-  # For images you might use something like this:
-  def extension_white_list
-    %w(jpg jpeg gif png pdf)
-  end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-  # def filename
-  #   "something.jpg" if original_filename
-  # end
+  def filename
+    "#{secure_token}.#{file.extension}" if original_filename.present?
+  end
+
+  private
+
+    def secure_token
+      var = :"@#{mounted_as}_secure_token"
+      model.instance_variable_get(var) or model.instance_variable_set(var, SecureRandom.uuid)
+    end
 
 end

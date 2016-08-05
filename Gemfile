@@ -17,11 +17,22 @@ gem "carrierwave"
 
 gem "carrierwave-mongoid", :require => 'carrierwave/mongoid'
 
-gem "carrierwave-base64"
+gem 'carrierwave_backgrounder', github: 'lardawge/carrierwave_backgrounder'
+
+gem 'mini_magick'
 
 gem "fog-aws"
 
+gem 'sidekiq'
+
+gem 'sidetiq'
+
 gem "figaro"
+
+gem 'grim'
+
+#Enabling Cross-Origin Resource Sharing (CORS)
+gem 'rack-cors', :require => 'rack/cors'
 
 gem "byebug"
 

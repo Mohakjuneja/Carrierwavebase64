@@ -1,11 +1,12 @@
 class ContentsController < ApplicationController
   before_action :set_content, only: [:show, :update, :destroy]
 
+  respond_to :json
+
   # GET /contents
   # GET /contents.json
   def index
     @contents = Content.all
-
     render json: @contents
   end
 
@@ -15,14 +16,23 @@ class ContentsController < ApplicationController
     render json: @content
   end
 
-  # POST /contents
-  # POST /contents.json
   def create
-    @content = Content.new(content_params)
-    if @content.save
-      render json: @content, status: :created, location: @content
+    if !params[:content][:assets_attributes] || (params[:content][:assets_attributes].all? &:blank?)
+      render json: { errors: "Err! You didn't select any file" }, status: 422 and return
+    end
+    
+    pages = params[:content][:assets_attributes].size
+    assets =params["content"].delete("assets_attributes")      
+    
+    content = Content.new(content_params)
+    content.pages = pages    
+ 
+    if content.save
+      render json: content, status: 201
+      byebug 
+      CreateAsset.perform_async(content.id.to_s,assets)
     else
-      render json: @content.errors, status: :unprocessable_entity
+      render json: { errors: content.errors }, status: 422
     end
   end
 
@@ -53,6 +63,7 @@ class ContentsController < ApplicationController
     end
 
     def content_params
-      params.require(:content).permit(:title, :description, :image)
+      params.require(:content).permit(:title, :description, assets_attributes: [ :asset, :asset_tmp ])
     end
+
 end
