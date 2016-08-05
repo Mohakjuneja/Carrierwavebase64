@@ -29,7 +29,6 @@ class ContentsController < ApplicationController
  
     if content.save
       render json: content, status: 201
-      byebug 
       CreateAsset.perform_async(content.id.to_s,assets)
     else
       render json: { errors: content.errors }, status: 422
